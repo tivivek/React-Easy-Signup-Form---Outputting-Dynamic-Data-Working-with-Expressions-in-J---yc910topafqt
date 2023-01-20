@@ -1,92 +1,190 @@
-import React from 'react'
+import React, {Component, useState} from "react";
+
 import '../styles/App.css';
 
 
+ 
+
 const App = () => {
-  
-  const validate = (event) => {
-      
-    event.preventDefault();
-    var email = document.querySelector("input[data-testid='email']").value;
-    const error = document.getElementById("error");
-    const welcome = document.getElementById("welcome");
-    var input = document.querySelectorAll("input");
-    var name = input[0].value;
-    var password = input[3].value;
-    
 
-      for(var i=0 ; i<input.length ; i++){
+  let genders = ['female', 'male', 'other']
 
-        console.log(input[i].value.length);
+  const [errorMessage, setError] = useState('')
 
-        if(input[i].value.length == 0){
+  const [name, setName] = useState('')
 
-            error.innerHTML = "<h1>All fields are mandatory</h1>";
-                return;
+  const [email, setEmail] = useState('')
+
+  const [gender, setGender] = useState('male')
+
+  const [phone, setPhone] = useState('')
+
+  const [password, setPassword] = useState('')
+
+  const handleName = (e) => {
+
+      setName(e.target.value)
+
+  }
+
+  const handleEmail = (e) => {
+
+      setEmail(e.target.value)
+
+  }
+
+  const handlePhone = (e) => {
+
+    setPhone(e.target.value)
+
+  }
+
+  const handlePassword = (e) => {
+
+     setPassword(e.target.value)
+
+  }
+
+  const handleClick = (e) => {
+
+      e.preventDefault();
+
+      if(name === '' || email === '' || phone === '' || password === '') {
+
+         setError('All fields are mandatory')
+
+         return
+
+      }
+
+        var regEx = /^[a-z0-9' ']+$/i;
+
+        if(name.charAt(0) === ' ' ) {
+
+          setError('Name is not alphanumeric')
+
+          return
+
         }
 
+        if(!regEx.test(name)) {
+
+            setError('Name is not alphanumeric')
+
+            return
+
+        }
+
+   
+
+        if(!email.includes('@')) {
+
+            setError('Email must contain @')
+
+            return
+
+        }
+
+       
+
+        if(isNaN(phone)) {
+
+          setError('Phone Number must contain only numbers')
+
+          return
+
+        }
+
+        if(password.length < 6) {
+
+          setError('Password must contain atleast 6 letters')
+
+          return
+
+        }
+
+      else {
+
+        let info = email;
+
+        info = info.slice(0, info.indexOf("@"));
+
+        console.log(info);
+
+        setError("Hello " + info);
+
       }
 
-      var matches = name.match(/(\d+)/);
-      console.log(matches);
-
-      if(matches == null){
-
-        error.innerHTML = "<h1>Name is not alphanumeric</h1>";
-        return;
-      }
-
-      if( email.indexOf('@') == -1)
-      {
-        welcome.innerHTML = "";
-        error.innerHTML = "<h1>Email must contain @</h1>";
-
-        return
-      }
-
-      if(password.length <6){
-        error.innerHTML = "<h1>Password must contain atleast 6 letters</h1>";
-        return;
-      }
-      
-      console.log("email="+email);
-      error.innerHTML ="";
-      welcome.innerHTML = "<h1>Hello "+email.slice(0,email.indexOf('@'))+"</h1>";
-
-    }
+  }
 
   return (
 
     <div id="main">
 
-      <form  onSubmit={validate}>
+       <form>
 
-        <label>name</label>
-        <input type="text" data-testid = 'name'  />
-        <label>Email</label>
-        <input type="text" data-testid='email' id = "email"  /> 
-        <label>Gender</label>
+         <p>{errorMessage}</p>
 
-        <select data-testid='gender' placeholder="Gender">
-          <option value="male">Male</option>
-          <option value="female">Female</option>
-          <option value="other">Others</option>
-        </select>
+          <label>Name : </label>
 
-          <label>Phone Number</label>
-          <input type="text" data-testid='phoneNumber'   />
-          <label>Password</label>
-          <input type="password" data-testid = "password"  />
-          <button type="submit" data-testid="submit">Submit</button>
+          <input data-testid = 'name' type='text' onChange={(e) => handleName(e)}></input>
 
-        </form>
+          <br/><br/>
 
-        <div id="error"></div>
-        <div id="welcome"></div>
+          <label>Email : </label>
+
+          <input data-testid = 'email' type='email' onChange={(e) => handleEmail(e)}></input>
+
+          <br/>
+
+          <br/>
+
+          <label>Gender : </label>
+
+          <select data-testid = 'gender' value={gender} onChange={(e) => setGender(e.target.value)}>
+
+           {genders.map((gender) => (
+
+              <option key={gender} value={gender}>{gender}</option>
+
+           )
+
+           )}
+
+          </select>
+
+          <br/>
+
+          <br/>
+
+          <label>Phone No. : </label>
+
+          <input data-testid = 'phoneNumber' type='phone' onChange={(e) => handlePhone(e)}></input>
+
+          <br/>
+
+          <br/>
+
+          <label>Password : </label>
+
+          <input data-testid = 'password' type='password' onChange={(e) => handlePassword(e)}></input>
+
+          <br/>
+
+          <br/>
+
+          <button  data-testid = 'submit' onClick={(e) => handleClick(e)}>Submit</button>
+
+       </form>
+
     </div>
 
   )
+
 }
 
+
+
+ 
 
 export default App;
